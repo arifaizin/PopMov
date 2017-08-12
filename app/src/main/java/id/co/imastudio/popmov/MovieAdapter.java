@@ -1,12 +1,14 @@
 package id.co.imastudio.popmov;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -37,13 +39,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         //ngapain
         //set data
         holder.tvjudulMovie.setText(listMovie.get(position).getJudul());
 //        holder.ivposterMovie.set
         //Glide untuk load gambar dari Internet
         Glide.with(context).load(listMovie.get(position).getPoster()).into(holder.ivposterMovie);
+        //setOnClick
+        holder.ivposterMovie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Kliked posisi "+ position, Toast.LENGTH_SHORT).show();
+                // Intent ke DetailActivity
+                Intent pindah = new Intent(context, DetailActivity.class);
+                //kirim data
+                pindah.putExtra("DATA_JUDUL", listMovie.get(position).getJudul());
+                pindah.putExtra("DATA_POSTER", listMovie.get(position).getPoster());
+                context.startActivity(pindah);
+            }
+        });
+
     }
 
     @Override
