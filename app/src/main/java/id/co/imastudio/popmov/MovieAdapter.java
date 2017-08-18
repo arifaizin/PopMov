@@ -79,4 +79,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         }
     }
+
+//    public void swapDataSet(ArrayList<MovieModel> listMovie){
+//
+//        this.listMovie = listMovie;
+//
+//        //now, tell the adapter about the update
+//        notifyDataSetChanged();
+//
+//    }
 }
