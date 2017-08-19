@@ -1,7 +1,16 @@
 package id.co.imastudio.popmov;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,12 +31,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import id.co.imastudio.popmov.data.MovieContract;
 
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int ID_FILM_LOADER = 100;
+    private static final String TAG = "MainActivity";
     RecyclerView recycler;
     ArrayList<MovieModel> listMovie;
     String pilihanFilm = "popular";
     private String linkurl;
+    MovieAdapter adapter;
+
+//    MovieDbHelper dbHelper = new MovieDbHelper(this);
+//    SQLiteDatabase mDb = dbHelper.getWritableDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +77,25 @@ public class MainActivity extends AppCompatActivity {
 //        }
         //dataOnline
         linkurl = "https://api.themoviedb.org/3/movie/popular?api_key=b08e3495841838f530552c2b261e00b1&language=en-US&page=1";
-        getDataOnline(linkurl);
+
+//        if (isNetworkConnected()) {
+            getDataOnline(linkurl);
+            getSupportLoaderManager().initLoader(ID_FILM_LOADER, null, MainActivity.this);
+
+//        } else {
+//            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+//            getSupportLoaderManager().initLoader(ID_FILM_LOADER, null, MainActivity.this);
+//        }
+
+
+
+        //adapter
+        adapter = new MovieAdapter(MainActivity.this, listMovie);
+        recycler.setAdapter(adapter);
+
+        //layoutmanager
+        recycler.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+
 
 
     }
@@ -84,14 +119,14 @@ public class MainActivity extends AppCompatActivity {
                         movie1.setPoster(json.getString("poster_path"));
                         listMovie.add(movie1);
 
-                        //adapter
-                        MovieAdapter adapter = new MovieAdapter(MainActivity.this, listMovie);
-                        recycler.setAdapter(adapter);
+                        //insert data to sqlite
+                        ContentValues cv = new ContentValues();
+                        cv.put(MovieContract.MovieEntry.COLUMN_JUDUL, json.getString("title"));
+                        cv.put(MovieContract.MovieEntry.COLUMN_POSTER, json.getString("poster_path"));
+                        Log.d(TAG, "onResponse: "+ cv.get(MovieContract.MovieEntry.COLUMN_POSTER));
+                        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
 
-                        //layoutmanager
-                        recycler.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-
-
+                        Toast.makeText(MainActivity.this, "Uri :" + uri, Toast.LENGTH_SHORT).show();
 
                     }
                 } catch (JSONException e) {
@@ -148,5 +183,34 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    //Loader
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id){
+            case ID_FILM_LOADER:
+                Uri filmUri = MovieContract.MovieEntry.CONTENT_URI;
+                Log.d(TAG, "onCreateLoader: "+ filmUri.toString());
+                return new CursorLoader(this, filmUri, null, null, null, null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
 //
+private boolean isNetworkConnected() {
+    ConnectivityManager connMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    return networkInfo != null && networkInfo.isConnected();
+}
 }

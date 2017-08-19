@@ -2,7 +2,9 @@ package id.co.imastudio.popmov;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,10 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import id.co.imastudio.popmov.data.MovieContract;
+
+import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
+
 /**
  * Created by idn on 8/6/2017.
  */
@@ -21,9 +27,9 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder>{
     private Context context;
     private ArrayList<MovieModel> listMovie;
+    private Cursor mCursor;
 
     //generate constructor
-
 
     public MovieAdapter(Context context, ArrayList<MovieModel> listMovie) {
         this.context = context;
@@ -42,10 +48,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         //ngapain
         //set data
-        holder.tvjudulMovie.setText(listMovie.get(position).getJudul());
+
+
+        //ambil data dari Sqlite
+        int judulIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_JUDUL);
+        int posterIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER);
+
+        mCursor.moveToPosition(position);
+
+
+        String judulFilm = mCursor.getString(judulIndex);
+        String posterFilm = "https://image.tmdb.org/t/p/w500"+mCursor.getString(posterIndex);
+
+        Log.d(TAG, "onBindViewHolder: "+ judulFilm+posterFilm);
+
+//        holder.tvjudulMovie.setText(listMovie.get(position).getJudul());
+////        holder.ivposterMovie.set
+//        //Glide untuk load gambar dari Internet
+//        Glide.with(context).load(listMovie.get(position).getPoster()).into(holder.ivposterMovie);
+
+        holder.tvjudulMovie.setText(judulFilm);
 //        holder.ivposterMovie.set
         //Glide untuk load gambar dari Internet
-        Glide.with(context).load(listMovie.get(position).getPoster()).into(holder.ivposterMovie);
+        Glide.with(context).load(posterFilm).into(holder.ivposterMovie);
+
         //setOnClick
         holder.ivposterMovie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +91,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         //jumlah list
-        return listMovie.size();
+//        return listMovie.size();
+        if (mCursor != null) {
+            return mCursor.getCount();
+        } else {
+            return -1;
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -79,6 +110,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
         }
     }
+
+    void swapCursor(Cursor newCursor){
+        mCursor=newCursor;
+        notifyDataSetChanged();
+    }
+
+
 
 //    public void swapDataSet(ArrayList<MovieModel> listMovie){
 //
