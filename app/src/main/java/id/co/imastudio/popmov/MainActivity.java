@@ -89,6 +89,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
 
+//        public static boolean CheckIsDataAlreadyInDBorNot(String TableName,
+//                String dbfield, String fieldValue) {
+//            SQLiteDatabase sqldb = EGLifeStyleApplication.sqLiteDatabase;
+//            String Query = "Select * from " + TableName + " where " + dbfield + " = " + fieldValue;
+//            Cursor cursor = sqldb.rawQuery(Query, null);
+//            if(cursor.getCount() <= 0){
+//                cursor.close();
+//                return false;
+//            }
+//            cursor.close();
+//            return true;
+//        }
+
         //adapter
         adapter = new MovieAdapter(MainActivity.this, listMovie);
         recycler.setAdapter(adapter);
