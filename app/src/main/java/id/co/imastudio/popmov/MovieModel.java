@@ -6,10 +6,21 @@ package id.co.imastudio.popmov;
 
 public class MovieModel {
 
+
+
+    private int id;
     private String judul;
     private String poster;
 
     //generate setter and getter
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getJudul() {
         return judul;
@@ -20,7 +31,7 @@ public class MovieModel {
     }
 
     public String getPoster() {
-        return "https://image.tmdb.org/t/p/w500"+poster;
+        return poster;
     }
 
     public void setPoster(String poster) {

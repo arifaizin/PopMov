@@ -16,8 +16,6 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-import id.co.imastudio.popmov.data.MovieContract;
-
 import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 /**
@@ -51,14 +49,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
 
         //ambil data dari Sqlite
-        int judulIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_JUDUL);
-        int posterIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER);
+//        int judulIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_JUDUL);
+//        int posterIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER);
+//
+//        mCursor.moveToPosition(position);
+//
+//        String judulFilm = mCursor.getString(judulIndex);
+//        String posterFilm = "https://image.tmdb.org/t/p/w500"+mCursor.getString(posterIndex);
 
-        mCursor.moveToPosition(position);
 
-
-        String judulFilm = mCursor.getString(judulIndex);
-        String posterFilm = "https://image.tmdb.org/t/p/w500"+mCursor.getString(posterIndex);
+        String judulFilm =listMovie.get(position).getJudul();
+        String posterFilm =listMovie.get(position).getPoster();
 
         Log.d(TAG, "onBindViewHolder: "+ judulFilm+posterFilm);
 
@@ -70,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         holder.tvjudulMovie.setText(judulFilm);
 //        holder.ivposterMovie.set
         //Glide untuk load gambar dari Internet
-        Glide.with(context).load(posterFilm).into(holder.ivposterMovie);
+        Glide.with(context).load("https://image.tmdb.org/t/p/w500"+posterFilm).into(holder.ivposterMovie);
 
         //setOnClick
         holder.ivposterMovie.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +81,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
                 // Intent ke DetailActivity
                 Intent pindah = new Intent(context, DetailActivity.class);
                 //kirim data
+                pindah.putExtra("DATA_ID", listMovie.get(position).getId());
                 pindah.putExtra("DATA_JUDUL", listMovie.get(position).getJudul());
                 pindah.putExtra("DATA_POSTER", listMovie.get(position).getPoster());
                 context.startActivity(pindah);
@@ -90,12 +92,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        //jumlah list
+//        jumlah list
 //        return listMovie.size();
         if (mCursor != null) {
             return mCursor.getCount();
         } else {
-            return -1;
+            return listMovie.size();
         }
     }
 
@@ -111,7 +113,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
         }
     }
 
-    void swapCursor(Cursor newCursor){
+    public void swapCursor(Cursor newCursor){
         mCursor=newCursor;
         notifyDataSetChanged();
     }

@@ -101,6 +101,7 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int numRowsDeleted;
 
         if (null == selection) selection = "1";
@@ -112,6 +113,19 @@ public class MovieContentProvider extends ContentProvider {
                         MovieContract.MovieEntry.TABLE_NAME,
                         selection,
                         selectionArgs);
+
+                // reset _ID
+                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + MovieContract.MovieEntry.TABLE_NAME + "'");
+
+                break;
+
+            case FILM_WITH_ID:
+                numRowsDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry.COLUMN_ID + " = ?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))});
+
+                // reset _ID
+                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + MovieContract.MovieEntry.TABLE_NAME + "'");
+
                 break;
 
             default:

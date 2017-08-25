@@ -3,7 +3,7 @@
     package="id.co.imastudio.popmov">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,20 +15,25 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize">
+
+        </activity>
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name=".data.MovieContentProvider"
+            android:authorities="id.co.imastudio.popmov"
+            android:exported="false" />
+
+        <activity android:name=".TabActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <provider
-            android:authorities="id.co.imastudio.popmov"
-            android:name=".data.MovieContentProvider"
-            android:exported="false"/>
     </application>
 
 </manifest>

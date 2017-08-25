@@ -20,6 +20,7 @@ public class MovieContract {
 
         //untuk sqlite
         public static final String TABLE_NAME = "movie";
+        public static final String COLUMN_ID = "id";
         public static final String COLUMN_JUDUL = "title";
         public static final String COLUMN_POSTER = "poster_path";
 

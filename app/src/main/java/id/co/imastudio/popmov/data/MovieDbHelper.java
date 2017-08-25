@@ -12,7 +12,7 @@ import android.util.Log;
 public class MovieDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "film.db";
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 6;
 
     private static final String TAG = "MovieDbHelper";
     //logt
@@ -28,6 +28,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
                 "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
                         MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        MovieContract.MovieEntry.COLUMN_ID + " INTEGER NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_JUDUL + " TEXT NOT NULL, " +
                         MovieContract.MovieEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
                         "UNIQUE (" + MovieContract.MovieEntry.COLUMN_JUDUL + ") ON CONFLICT REPLACE);";
