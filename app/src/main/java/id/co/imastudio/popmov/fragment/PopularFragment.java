@@ -53,13 +53,6 @@ public class PopularFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_popular, container, false);
 
-
-        return fragmentView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         //dataset
         //1 Buat Model datanya
         //2 ArrayList MovieModel
@@ -67,9 +60,8 @@ public class PopularFragment extends Fragment {
 
 //        getActivity().getSupportLoaderManager().initLoader(ID_FILM_LOADER, null, this);
 
-
         //layoutmanager
-        recycler = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recycler = (RecyclerView) fragmentView.findViewById(R.id.recycler_view);
         recycler.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         //adapter
@@ -79,6 +71,13 @@ public class PopularFragment extends Fragment {
         //dataOnline
         linkurl = "https://api.themoviedb.org/3/movie/popular?api_key=b08e3495841838f530552c2b261e00b1&language=en-US&page=1";
         getDataOnline(linkurl);
+        return fragmentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
 
     }
 
